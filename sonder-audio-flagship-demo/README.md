@@ -1,160 +1,67 @@
-<h1 align="center" style="position: relative;">
-  <br>
-    <img src="./assets/shoppy-x-ray.svg" alt="logo" width="200">
-  <br>
-  Shopify Skeleton Theme
-</h1>
+# Sonder Audio — Flagship Shopify Experience[cite: 3]
 
-A minimal, carefully structured Shopify theme designed to help you quickly get started. Designed with modularity, maintainability, and Shopify's best practices in mind.
+An Awwwards-caliber, native Shopify Online Store 2.0 flagship product launch experience built to demonstrate high-end creative engineering within Shopify's native ecosystem rather than a headless architecture[cite: 3].
 
-<p align="center">
-  <a href="./LICENSE.md"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License"></a>
-  <a href="./actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Shopify/skeleton-theme/actions/workflows/ci.yml/badge.svg"></a>
-</p>
+## Project Overview
+**Sonder Audio** is a conceptual luxury wireless audio brand designed to rival Apple and Bang & Olufsen product launch pages. The project prioritizes cinematic motion design, spatial 3D interaction, and precise typographic restraint while maintaining seamless performance inside Shopify's native theme engine[cite: 3].
 
-## Getting started
+## Tech Stack
+* **Platform:** Shopify Online Store 2.0 (Native Liquid Theme)[cite: 3]
+* **Animation Engine:** GSAP + ScrollTrigger[cite: 3]
+* **Smooth Scrolling:** Lenis Scroll[cite: 3]
+* **3D Architecture:** Three.js (WebGL with custom physically-based materials, custom multi-layer parallax, and raycast hotspots)[cite: 3]
+* **Audio Processing:** Native browser Web Audio API (Real-time biquad filtering and spatial panning simulation)[cite: 3]
+* **Styling:** Custom Modular CSS / CSS Grid[cite: 3]
 
-### Prerequisites
+## Key Flagship Features
+* **Cinematic Scroll-Driven Hero (5.1):** Pin-scrolled sequence that crossfades messaging and scales products dynamically[cite: 3].
+* **Layered 3D Exploded Viewer:** Real-time WebGL rendering breaking down the headphones into 5 distinct spatial layers (outer shell, acoustic frame, driver unit with copper coil, acoustic chamber, and protein-leather cushions)[cite: 3].
+* **Interactive Web Audio Sandbox:** Real-time acoustic processing letting users toggle between Standard, Active Noise Cancellation (ANC), and Spatial Audio modes[cite: 3].
+* **Bento-Grid Feature Showcase:** Modern asymmetric card layout with custom micro-interactions and hover states[cite: 3].
+* **Fit Profiler Configurator:** Multi-step interactive state engine recommending custom finishes based on listening environment[cite: 3].
 
-Before starting, ensure you have the latest Shopify CLI installed:
+## Visual Showcase
 
-- [Shopify CLI](https://shopify.dev/docs/api/shopify-cli) – helps you download, upload, preview themes, and streamline your workflows
+### Hero Section
+![Hero Section View](screenshots/hero-section.png)
 
-If you use VS Code:
+### Layered 3D Architecture & Exploded View
+![3D Exploded View](screenshots/3d-exploded.png)
 
-- [Shopify Liquid VS Code Extension](https://shopify.dev/docs/storefronts/themes/tools/shopify-liquid-vscode) – provides syntax highlighting, linting, inline documentation, and auto-completion specifically designed for Liquid templates
+### Bento-Grid Flagship Features
+![Bento Grid](screenshots/bento-grid.png)
 
-### Clone
+### Web Audio Sandbox
+![Audio Sandbox](screenshots/audio-sandbox.png)
 
-Clone this repository using Git or Shopify CLI:
+### Profile Personalization
+![Profile Personalization](screenshots/profile-fit.png)
+
+### Technical Specifications
+![Technical Specifications](screenshots/technical-specifications.png)
+
+## Performance & Mobile Optimization
+* **WebGL Degradation:** Gracefully handles mobile hardware limitations with optimized render loops and touch-action controls[cite: 3].
+* **Lighthouse Score:** Optimized asset loading and lazy-loaded media achieving high performance benchmarks for animation-heavy storefronts[cite: 3].
+* **Motion Accessibility:** Fully respects `prefers-reduced-motion` browser flags[cite: 3].
+
+## Local Development Setup
+1. Clone the repository:
+   ```bash
+   git clone [https://github.com/ZainAbbas-dev/sonder-audio-shopify-flagship-demo.git](https://github.com/ZainAbbas-dev/sonder-audio-shopify-flagship-demo.git)
+
+   
+2. Install Shopify CLI if not already installed.
+3. Run theme development server:
 
 ```bash
-git clone git@github.com:Shopify/skeleton-theme.git
-# or
-shopify theme init
+shopify theme dev --store sonder-audio-flagship-demo
 ```
-
-### Preview
-
-Preview this theme using Shopify CLI:
-
-```bash
-shopify theme dev
-```
-
-## Theme architecture
-
-```bash
-.
-├── assets          # Stores static assets (CSS, JS, images, fonts, etc.)
-├── blocks          # Reusable, nestable, customizable UI components
-├── config          # Global theme settings and customization options
-├── layout          # Top-level wrappers for pages (layout templates)
-├── locales         # Translation files for theme internationalization
-├── sections        # Modular full-width page components
-├── snippets        # Reusable Liquid code or HTML fragments
-└── templates       # Templates combining sections to define page structures
-```
-
-To learn more, refer to the [theme architecture documentation](https://shopify.dev/docs/storefronts/themes/architecture).
-
-### Templates
-
-[Templates](https://shopify.dev/docs/storefronts/themes/architecture/templates#template-types) control what's rendered on each type of page in a theme.
-
-The Skeleton Theme scaffolds [JSON templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/json-templates) to make it easy for merchants to customize their store.
-
-None of the template types are required, and not all of them are included in the Skeleton Theme. Refer to the [template types reference](https://shopify.dev/docs/storefronts/themes/architecture/templates#template-types) for a full list.
-
-### Sections
-
-[Sections](https://shopify.dev/docs/storefronts/themes/architecture/sections) are Liquid files that allow you to create reusable modules of content that can be customized by merchants. They can also include blocks which allow merchants to add, remove, and reorder content within a section.
-
-Sections are made customizable by including a `{% schema %}` in the body. For more information, refer to the [section schema documentation](https://shopify.dev/docs/storefronts/themes/architecture/sections/section-schema).
-
-### Blocks
-
-[Blocks](https://shopify.dev/docs/storefronts/themes/architecture/blocks) let developers create flexible layouts by breaking down sections into smaller, reusable pieces of Liquid. Each block has its own set of settings, and can be added, removed, and reordered within a section.
-
-Blocks are made customizable by including a `{% schema %}` in the body. For more information, refer to the [block schema documentation](https://shopify.dev/docs/storefronts/themes/architecture/blocks/theme-blocks/schema).
-
-## Schemas
-
-When developing components defined by schema settings, we recommend these guidelines to simplify your code:
-
-- **Single property settings**: For settings that correspond to a single CSS property, use CSS variables:
-
-  ```liquid
-  <div class="collection" style="--gap: {{ block.settings.gap }}px">
-    ...
-  </div>
-
-  {% stylesheet %}
-    .collection {
-      gap: var(--gap);
-    }
-  {% endstylesheet %}
-
-  {% schema %}
-  {
-    "settings": [{
-      "type": "range",
-      "label": "gap",
-      "id": "gap",
-      "min": 0,
-      "max": 100,
-      "unit": "px",
-      "default": 0,
-    }]
-  }
-  {% endschema %}
-  ```
-
-- **Multiple property settings**: For settings that control multiple CSS properties, use CSS classes:
-
-  ```liquid
-  <div class="collection {{ block.settings.layout }}">
-    ...
-  </div>
-
-  {% stylesheet %}
-    .collection--full-width {
-      /* multiple styles */
-    }
-    .collection--narrow {
-      /* multiple styles */
-    }
-  {% endstylesheet %}
-
-  {% schema %}
-  {
-    "settings": [{
-      "type": "select",
-      "id": "layout",
-      "label": "layout",
-      "values": [
-        { "value": "collection--full-width", "label": "t:options.full" },
-        { "value": "collection--narrow", "label": "t:options.narrow" }
-      ]
-    }]
-  }
-  {% endschema %}
-  ```
-
-## CSS & JavaScript
-
-For CSS and JavaScript, we recommend using the [`{% stylesheet %}`](https://shopify.dev/docs/api/liquid/tags#stylesheet) and [`{% javascript %}`](https://shopify.dev/docs/api/liquid/tags/javascript) tags. They can be included multiple times, but the code will only appear once.
-
-### `critical.css`
-
-The Skeleton Theme explicitly separates essential CSS necessary for every page into a dedicated `critical.css` file.
 
 ## Contributing
 
-We're excited for your contributions to the Skeleton Theme! This repository aims to remain as lean, lightweight, and fundamental as possible, and we kindly ask your contributions to align with this intention.
-
-Visit our [CONTRIBUTING.md](./CONTRIBUTING.md) for a detailed overview of our process, guidelines, and recommendations.
+Contributions, issues, and feature requests are welcome! Feel free to check the issues page or submit a pull request.
 
 ## License
 
-Skeleton Theme is open-sourced under the [MIT](./LICENSE.md) License.
+Distributed under the MIT License. See `LICENSE` for more information.
