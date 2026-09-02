@@ -1,0 +1,149 @@
+:root {
+  --bg-primary: #0A0A0A;
+  --bg-alternate: #F5F5F0;
+  --text-main: #FFFFFF;
+  --text-muted: #888888;
+  --accent-gold: #C9A876;
+  --border-subtle: #222222;
+}
+
+/* Global Reset & Scroll Fix */
+html, body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  
+  /* THIS FIXES THE TRACKPAD SCROLL LOCK */
+  height: auto !important; 
+  overflow: auto !important; 
+  overscroll-behavior: none; 
+}
+
+/* Lenis Smooth Scroll Required Boilerplate */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-gold);
+}
+
+/* Shopify Base Theme Scroll Locks Override */
+html, body, .gradient, #MainContent, .content-for-layout {
+  overflow: visible !important;
+  overflow-x: visible !important;
+}
+
+/* 1. Kill Shopify's default native smooth scroll (causes trackpad lag/lock) */
+html, body {
+  scroll-behavior: auto !important; 
+  height: auto !important;
+  min-height: 100vh;
+  overflow: visible !important;
+}
+
+/* Main Headings (e.g., "Join our email list") */
+.footer-block__heading,
+.footer__blocks-wrapper h2,
+.footer__blocks-wrapper h3 {
+  color: #FFFFFF !important;
+}
+
+/* Paragraphs, links, and copyright text */
+.footer .rte,
+.footer__list-item a,
+.footer__content-bottom *,
+.copyright__content,
+.copyright__content a {
+  color: #888888 !important;
+  transition: color 0.3s ease;
+}
+
+/* Hover effect for footer links */
+.footer__list-item a:hover,
+.copyright__content a:hover {
+  color: #FFFFFF !important;
+}
+
+
+/* =========================================================
+   COLLECTION & PRODUCT GRID FIXES (DARK THEME)
+   ========================================================= */
+
+/* Collection Page Headers and Filter Text */
+.collection-hero__title, 
+.title-wrapper-with-link .title, 
+.facets__heading, 
+.facets__summary span, 
+.select__select, 
+.product-count__text {
+  color: #FFFFFF !important;
+}
+
+/* Sorting / Filtering dropdowns */
+.select__select, .facets__summary {
+  background-color: transparent !important;
+  color: #FFFFFF !important;
+  border-color: var(--border-subtle) !important;
+}
+
+.icon-caret {
+  color: #FFFFFF !important;
+}
+
+/* Product Cards Headings (Names) */
+.card__heading, 
+.card__heading a, 
+.full-unstyled-link {
+  color: #FFFFFF !important;
+  text-decoration: none !important;
+  transition: color 0.3s ease;
+}
+
+/* Hover effect with Brand Gold */
+.card__heading a:hover, 
+.full-unstyled-link:hover {
+  color: var(--accent-gold) !important;
+}
+
+/* Product Prices */
+.price, 
+.price-item, 
+.price-item--regular, 
+.price-item--sale {
+  color: var(--text-muted) !important;
+}
+
+/* Remove default Shopify light backgrounds from cards */
+.card, .card--standard, .card__inner, .card__media {
+  background: transparent !important;
+  border: none !important;
+}
+

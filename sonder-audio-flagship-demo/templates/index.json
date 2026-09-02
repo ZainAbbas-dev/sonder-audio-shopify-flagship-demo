@@ -1,0 +1,26 @@
+{
+  "sections": {
+    "sonder_hero": {
+      "type": "sonder-hero",
+      "settings": {}
+    },
+    "sonder_parallax": {
+      "type": "sonder-parallax",
+      "settings": {}
+    },
+    "sonder_color_switcher": {
+      "type": "sonder-color-switcher",
+      "settings": {}
+    },
+    "sonder_bento_grid": {
+      "type": "sonder-bento-grid",
+      "settings": {}
+    }
+  },
+  "order": [
+    "sonder_hero",
+    "sonder_parallax",
+    "sonder_color_switcher",
+    "sonder_bento_grid"
+  ]
+}

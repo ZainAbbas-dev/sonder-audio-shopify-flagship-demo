@@ -1,0 +1,212 @@
+<div class="sonder-hero-wrapper" id="SonderHeroSafe">
+  <!-- Background Image Layer -->
+  {% if section.settings.hero_image != blank %}
+    {{ section.settings.hero_image | image_url: width: 2000 | image_tag: class: 'hero-bg-image', loading: 'eager' }}
+  {% else %}
+    <!-- Fallback if no image is uploaded -->
+    <div class="hero-bg-fallback"></div>
+  {% endif %}
+
+  <!-- Semi-transparent overlay for text readability -->
+  <div class="hero-overlay"></div>
+
+  <!-- NEW: Floating Product for Apple-style Scrub Reveal -->
+  {% if section.settings.floating_product != blank %}
+    {{ section.settings.floating_product | image_url: width: 1200 | image_tag: class: 'hero-floating-product', id: 'HeroFloatingProduct' }}
+  {% endif %}
+
+  <!-- Content Layer -->
+  <section class="hero-container" id="HeroTextLayer">
+    <div class="hero-content">
+      <span class="hero-badge">Flagship Audio Release</span>
+      <h1 class="hero-title">Purity in Sound.</h1>
+      <p class="hero-subtitle">Engineered for absolute acoustic fidelity. Discover the Sonder One over-ear reference system.</p>
+      
+      <!-- UPDATED BUTTON LINK -->
+      <a href="{{ section.settings.button_link | default: '/collections/all' }}" class="hero-cta">Explore Collection</a>
+    </div>
+  </section>
+</div>
+
+<style>
+  .sonder-hero-wrapper {
+    background-color: #0A0A0A;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative; 
+    overflow: hidden;
+  }
+
+  .hero-bg-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  .hero-bg-fallback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
+    z-index: 0;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.4) 50%, rgba(10,10,10,0.95) 100%);
+    z-index: 1;
+  }
+
+  /* NEW CSS FOR FLOATING PRODUCT */
+  .hero-floating-product {
+    position: absolute;
+    bottom: -30%; /* Start slightly off-screen below */
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    width: 90%;
+    max-width: 800px;
+    z-index: 2;
+    pointer-events: none; /* So it doesn't block the button */
+    object-fit: contain;
+    opacity: 0; /* Hidden until scrolled */
+  }
+
+  .hero-container {
+    max-width: 1200px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 80px 20px;
+    position: relative; 
+    z-index: 3; /* Kept above everything */
+  }
+
+  .hero-content {
+    max-width: 800px;
+  }
+
+  .hero-badge {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: #C9A876;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .hero-title {
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    color: #FFFFFF;
+  }
+
+  .hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: #888888;
+    max-width: 600px;
+    margin: 0 auto 40px auto;
+    font-weight: 300;
+  }
+
+  .hero-cta {
+    display: inline-block;
+    padding: 16px 36px;
+    background-color: transparent;
+    color: #FFFFFF;
+    border: 1px solid #C9A876;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .hero-cta:hover {
+    background-color: #C9A876;
+    color: #0A0A0A;
+  }
+</style>
+
+<script>
+  // Safe GSAP Implementation
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    const heroWrapper = document.getElementById('SonderHeroSafe');
+    const heroText = document.getElementById('HeroTextLayer');
+    const floatingProduct = document.getElementById('HeroFloatingProduct');
+
+    if (heroWrapper && floatingProduct) {
+      // Pin the hero section and scrub animation
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: heroWrapper,
+          start: "top top",
+          end: "+=120%", // Scrolls for 120% of viewport height before releasing
+          pin: true,
+          scrub: 1, // Buttery smooth follow
+        }
+      });
+
+      // 1. Text fades out and goes up
+      tl.to(heroText, { opacity: 0, y: -100, duration: 1 }, 0);
+      
+      // 2. Headphone rises up, fades in, scales, and tilts slightly
+      tl.to(floatingProduct, { 
+        opacity: 1,
+        y: "-45vh", // Pulls it into the center of the screen
+        scale: 1.1, 
+        rotation: -3, 
+        duration: 2 
+      }, 0.2);
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Sonder Cinematic Hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Background Image (Atmosphere)"
+    },
+    {
+      "type": "image_picker",
+      "id": "floating_product",
+      "label": "Floating Product Image (Transparent PNG for Scroll Reveal)"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link",
+      "info": "Leave blank to link to all products."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sonder Cinematic Hero"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,182 @@
+<section class="sonder-specs-section">
+  <div class="specs-container">
+    <div class="specs-header">
+      <h2 class="specs-title">Technical Specifications</h2>
+    </div>
+    
+    <div class="accordion-container">
+      <!-- Accordion Item 1 -->
+      <div class="accordion-item">
+        <button class="accordion-header" aria-expanded="false">
+          <span>Audio Architecture</span>
+          <span class="accordion-icon">+</span>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-inner">
+            <ul>
+              <li><strong>Drivers:</strong> Custom 40mm Beryllium drivers</li>
+              <li><strong>Noise Cancellation:</strong> Advanced Hybrid ANC with Transparency Mode</li>
+              <li><strong>Frequency Response:</strong> 10Hz - 40,000Hz (Hi-Res Certified)</li>
+              <li><strong>Spatial Audio:</strong> Supported with dynamic head tracking</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordion Item 2 -->
+      <div class="accordion-item">
+        <button class="accordion-header" aria-expanded="false">
+          <span>Battery & Power</span>
+          <span class="accordion-icon">+</span>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-inner">
+            <ul>
+              <li><strong>Battery Life:</strong> Up to 50 hours with ANC enabled</li>
+              <li><strong>Charging Method:</strong> USB-C</li>
+              <li><strong>Fast Charge:</strong> 10 minutes provides 5 hours of playback</li>
+              <li><strong>Full Charge Time:</strong> Approximately 2 hours</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordion Item 3 -->
+      <div class="accordion-item">
+        <button class="accordion-header" aria-expanded="false">
+          <span>Connectivity & Design</span>
+          <span class="accordion-icon">+</span>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-inner">
+            <ul>
+              <li><strong>Bluetooth:</strong> Version 5.3 with multipoint connection</li>
+              <li><strong>Codecs:</strong> aptX Adaptive, AAC, SBC</li>
+              <li><strong>Materials:</strong> Aerospace-grade aluminum, memory foam, vegan leather</li>
+              <li><strong>Weight:</strong> 285g</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sonder-specs-section {
+    background-color: #0A0A0A;
+    padding: 100px 20px;
+    color: #FFFFFF;
+  }
+  .specs-container {
+    max-width: 800px; /* Narrower width for reading comfort */
+    margin: 0 auto;
+  }
+  .specs-header {
+    margin-bottom: 40px;
+  }
+  .specs-title {
+    font-size: clamp(2rem, 3vw, 2.5rem);
+    font-weight: 300;
+    margin: 0;
+    border-bottom: 1px solid #333333;
+    padding-bottom: 20px;
+    color: #FFFFFF;
+  }
+  
+  .accordion-item {
+    border-bottom: 1px solid #1A1A1A;
+  }
+  .accordion-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 0;
+    background: transparent;
+    border: none;
+    color: #FFFFFF;
+    font-size: clamp(1.1rem, 2vw, 1.25rem);
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.3s ease;
+  }
+  .accordion-header:hover {
+    color: #C9A876;
+  }
+  .accordion-icon {
+    font-size: 1.5rem;
+    font-weight: 300;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+  }
+  
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .accordion-inner {
+    padding-bottom: 24px;
+    color: #888888;
+  }
+  .accordion-inner ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .accordion-inner li {
+    margin-bottom: 12px;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .accordion-inner li strong {
+    color: #FFFFFF;
+    font-weight: 500;
+    margin-right: 8px;
+  }
+
+  /* Active State Configurations */
+  .accordion-item.active .accordion-content {
+    max-height: 400px; /* Expands smoothly */
+  }
+  .accordion-item.active .accordion-icon {
+    transform: rotate(45deg); /* Turns the + into an x */
+    color: #C9A876;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const accordions = document.querySelectorAll('.accordion-header');
+    
+    accordions.forEach(acc => {
+      acc.addEventListener('click', function() {
+        const parent = this.parentElement;
+        
+        // Closes any already open accordion to keep it clean
+        document.querySelectorAll('.accordion-item').forEach(item => {
+          if(item !== parent) {
+            item.classList.remove('active');
+            item.querySelector('.accordion-header').setAttribute('aria-expanded', 'false');
+          }
+        });
+        
+        // Toggles the clicked item
+        const isActive = parent.classList.toggle('active');
+        this.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Sonder Tech Specs",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Sonder Tech Specs"
+    }
+  ]
+}
+{% endschema %}

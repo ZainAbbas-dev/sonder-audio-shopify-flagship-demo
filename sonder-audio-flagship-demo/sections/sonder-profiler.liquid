@@ -1,0 +1,262 @@
+<section class="sonder-profiler-section">
+  <div class="profiler-container">
+    <div class="profiler-header">
+      <span class="profiler-badge">Personalized Fit</span>
+      <h2 class="profiler-title">Find Your Sound.</h2>
+      <p class="profiler-subtitle">Answer two quick questions to discover your perfect acoustic profile.</p>
+    </div>
+
+    <!-- Quiz Area -->
+    <div class="profiler-box" id="profiler-box">
+      
+      <!-- Step 1 -->
+      <div class="profiler-step active" id="step-1">
+        <h3>1. Where do you listen the most?</h3>
+        <div class="options-grid">
+          <button class="profiler-btn" data-env="commute">Daily Commute (Noisy)</button>
+          <button class="profiler-btn" data-env="studio">Quiet Studio / Home</button>
+          <button class="profiler-btn" data-env="active">Gym / Active</button>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="profiler-step" id="step-2">
+        <h3>2. What's your primary audio focus?</h3>
+        <div class="options-grid">
+          <button class="profiler-btn" data-focus="bass">Heavy Bass / Electronic</button>
+          <button class="profiler-btn" data-focus="vocals">Podcasts / Vocals</button>
+          <button class="profiler-btn" data-focus="balanced">Balanced / Classical</button>
+        </div>
+      </div>
+
+      <!-- Result Step -->
+      <div class="profiler-step" id="step-result">
+        <div class="result-content">
+          <h3 id="result-title">Your Match: Midnight Black</h3>
+          <p id="result-desc">Optimized for maximum active noise cancellation during your commute, with deep, punchy bass.</p>
+          <div class="result-visual">
+             <img id="result-img" src="https://placehold.co/600x400/111111/c9a876/png?text=Midnight+Black" alt="Recommended Headphone">
+          </div>
+          <button class="reset-btn" id="reset-profiler">Retake Profiler</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .sonder-profiler-section {
+    background-color: #0A0A0A;
+    padding: 120px 20px;
+    color: #FFFFFF;
+    text-align: center;
+  }
+  .profiler-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .profiler-header {
+    margin-bottom: 40px;
+  }
+  .profiler-badge {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: #C9A876;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .profiler-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 300;
+    margin: 0 0 16px 0;
+  }
+  .profiler-subtitle {
+    color: #888888;
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+  }
+
+  /* Box UI */
+  .profiler-box {
+    background: #050505;
+    border: 1px solid #1A1A1A;
+    border-radius: 20px;
+    padding: 60px 40px;
+    min-height: 400px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Steps Animation */
+  .profiler-step {
+    position: absolute;
+    width: 100%;
+    padding: 0 40px;
+    opacity: 0;
+    transform: translateX(50px);
+    pointer-events: none;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .profiler-step.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+    position: relative;
+  }
+  .profiler-step.exit {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+
+  .profiler-step h3 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 30px;
+  }
+
+  /* Buttons */
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .profiler-btn {
+    background: #111111;
+    border: 1px solid #222222;
+    color: #FFFFFF;
+    padding: 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  .profiler-btn:hover {
+    border-color: #C9A876;
+    background: rgba(201, 168, 118, 0.05);
+    transform: translateY(-2px);
+  }
+
+  /* Results */
+  .result-visual {
+    margin: 30px auto;
+    max-width: 400px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #222222;
+  }
+  .result-visual img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  #result-title {
+    color: #C9A876;
+    font-size: 2rem;
+  }
+  #result-desc {
+    color: #888888;
+    line-height: 1.6;
+  }
+  .reset-btn {
+    background: transparent;
+    border: none;
+    color: #888888;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: color 0.3s;
+  }
+  .reset-btn:hover {
+    color: #FFFFFF;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    let userProfile = { env: '', focus: '' };
+    
+    const step1 = document.getElementById('step-1');
+    const step2 = document.getElementById('step-2');
+    const stepResult = document.getElementById('step-result');
+    
+    // Result Elements
+    const resTitle = document.getElementById('result-title');
+    const resDesc = document.getElementById('result-desc');
+    const resImg = document.getElementById('result-img');
+
+    // Handle Step 1
+    const envButtons = step1.querySelectorAll('.profiler-btn');
+    envButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        userProfile.env = btn.getAttribute('data-env');
+        transitionStep(step1, step2);
+      });
+    });
+
+    // Handle Step 2
+    const focusButtons = step2.querySelectorAll('.profiler-btn');
+    focusButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        userProfile.focus = btn.getAttribute('data-focus');
+        calculateResult();
+        transitionStep(step2, stepResult);
+      });
+    });
+
+    // Handle Reset
+    document.getElementById('reset-profiler').addEventListener('click', () => {
+      userProfile = { env: '', focus: '' };
+      stepResult.classList.remove('active');
+      stepResult.classList.add('exit');
+      setTimeout(() => {
+        stepResult.classList.remove('exit');
+        step1.classList.remove('exit');
+        step1.classList.add('active');
+      }, 500);
+    });
+
+    function transitionStep(current, next) {
+      current.classList.remove('active');
+      current.classList.add('exit');
+      
+      setTimeout(() => {
+        current.classList.remove('exit');
+        next.classList.add('active');
+      }, 500); // Matches CSS transition time
+    }
+
+    function calculateResult() {
+      // Dynamic logic for premium recommendation
+      if (userProfile.env === 'commute') {
+        resTitle.textContent = "Your Match: Midnight Black";
+        resDesc.textContent = "Optimized for maximum active noise cancellation in loud environments, delivering pure immersion.";
+        resImg.src = "https://placehold.co/600x400/111111/c9a876/png?text=Midnight+Black";
+      } else if (userProfile.env === 'studio' || userProfile.focus === 'balanced') {
+        resTitle.textContent = "Your Match: Slate Gray";
+        resDesc.textContent = "Tuned for critical listening and spatial audio perfection. A balanced, flat response for purists.";
+        resImg.src = "https://placehold.co/600x400/333333/ffffff/png?text=Slate+Gray";
+      } else {
+        resTitle.textContent = "Your Match: Champagne Gold";
+        resDesc.textContent = "Premium aesthetics paired with heavy, dynamic bass drivers for an energizing listening experience.";
+        resImg.src = "https://placehold.co/600x400/c9a876/111111/png?text=Champagne+Gold";
+      }
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Sonder Fit Profiler",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Sonder Fit Profiler"
+    }
+  ]
+}
+{% endschema %}

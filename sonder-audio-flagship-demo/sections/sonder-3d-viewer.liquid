@@ -1,0 +1,479 @@
+<section class="sonder-3d-section">
+  <div class="viewer-container">
+    <div class="viewer-header">
+      <span class="viewer-badge">Interactive 3D Experience</span>
+      <h2 class="viewer-title">Explore Every Detail.</h2>
+      <p class="viewer-subtitle">Drag to rotate. Tap a glowing point to uncover the layered engineering inside the Sonder One.</p>
+    </div>
+
+    <!-- 3D Canvas Container -->
+    <div class="canvas-wrapper" id="three-canvas-container" data-model-url="{{ section.settings.model_url }}">
+      <div id="loading-spinner" class="loading-spinner">Loading 3D Engine...</div>
+      <div id="drag-hint" class="drag-hint">&#8635; Drag to rotate</div>
+
+      <!-- Hotspot UI Overlay (Hidden by default) -->
+      <div id="hotspot-ui" class="hotspot-ui">
+        <h3 id="hotspot-title">Beryllium Drivers</h3>
+        <p id="hotspot-desc">Custom-tuned 40mm transducers for zero-distortion playback.</p>
+        <button id="close-hotspot" class="close-btn">&times;</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sonder-3d-section {
+    background-color: #050505;
+    padding: 100px 20px;
+    color: #FFFFFF;
+    text-align: center;
+  }
+  .viewer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .viewer-header {
+    margin-bottom: 40px;
+  }
+  .viewer-badge {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: #C9A876;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .viewer-title {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 300;
+    margin: 0 0 16px 0;
+  }
+  .viewer-subtitle {
+    color: #888888;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Canvas Area */
+  .canvas-wrapper {
+    width: 100%;
+    height: 60vh;
+    min-height: 500px;
+    background: radial-gradient(circle at center, #111111 0%, #050505 100%);
+    border: 1px solid #1A1A1A;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    cursor: grab;
+  }
+  .canvas-wrapper:active {
+    cursor: grabbing;
+  }
+
+  .loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #C9A876;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    z-index: 5;
+    transition: opacity 0.5s ease;
+  }
+
+  .drag-hint {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #888888;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    transition: opacity 0.8s ease;
+    pointer-events: none;
+    z-index: 6;
+  }
+  .drag-hint.hide {
+    opacity: 0;
+  }
+
+  /* Hotspot UI Box */
+  .hotspot-ui {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid #C9A876;
+    padding: 24px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 350px;
+    text-align: left;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 10;
+  }
+  .hotspot-ui.is-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+  .hotspot-ui h3 {
+    margin: 0 0 8px 0;
+    color: #FFFFFF;
+    font-size: 1.2rem;
+    font-weight: 400;
+  }
+  .hotspot-ui p {
+    margin: 0;
+    color: #888888;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: #888888;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  .close-btn:hover {
+    color: #FFFFFF;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const loadScript = (src) => {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    };
+
+    loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js')
+      .then(() => loadScript('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js'))
+      .then(() => loadScript('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js'))
+      .then(() => initThreeJS())
+      .catch(err => console.error('Error loading 3D scripts:', err));
+
+    function createGrilleTexture(baseColor, holeColor) {
+      const size = 256;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = baseColor;
+      ctx.fillRect(0, 0, size, size);
+      ctx.fillStyle = holeColor;
+      const spacing = 14;
+      const holeRadius = 3.2;
+      for (let y = spacing / 2; y < size; y += spacing) {
+        for (let x = spacing / 2; x < size; x += spacing) {
+          ctx.beginPath();
+          ctx.arc(x, y, holeRadius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      return texture;
+    }
+
+    function initThreeJS() {
+      const container = document.getElementById('three-canvas-container');
+      const spinner = document.getElementById('loading-spinner');
+      const hotspotUI = document.getElementById('hotspot-ui');
+      const hotspotTitle = document.getElementById('hotspot-title');
+      const hotspotDesc = document.getElementById('hotspot-desc');
+      const closeBtn = document.getElementById('close-hotspot');
+      const dragHint = document.getElementById('drag-hint');
+
+      const scene = new THREE.Scene();
+
+      // Pulled camera back to fit the exploded width
+      const camera = new THREE.PerspectiveCamera(35, container.clientWidth / container.clientHeight, 0.1, 100);
+      camera.position.set(0, 2, 22);
+
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.15;
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.appendChild(renderer.domElement);
+
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.06;
+      controls.enableZoom = true;
+      controls.minPolarAngle = Math.PI / 4;
+      controls.maxPolarAngle = Math.PI / 1.5;
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 0.8;
+
+      let idleTimer;
+      controls.addEventListener('start', () => {
+        controls.autoRotate = false;
+        dragHint.classList.add('hide');
+        clearTimeout(idleTimer);
+      });
+      controls.addEventListener('end', () => {
+        idleTimer = setTimeout(() => { controls.autoRotate = true; }, 4000);
+      });
+
+      // Lighting
+      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x0a0a0a, 0.5);
+      scene.add(hemiLight);
+
+      const keyLight = new THREE.DirectionalLight(0xffffff, 1.3);
+      keyLight.position.set(5, 8, 6);
+      keyLight.castShadow = true;
+      scene.add(keyLight);
+
+      const fillLight = new THREE.DirectionalLight(0xffffff, 0.35);
+      fillLight.position.set(-6, 2, 3);
+      scene.add(fillLight);
+
+      const rimLight = new THREE.DirectionalLight(0xC9A876, 0.9);
+      rimLight.position.set(-5, 5, -7);
+      scene.add(rimLight);
+
+      const floor = new THREE.Mesh(
+        new THREE.PlaneGeometry(30, 30),
+        new THREE.ShadowMaterial({ opacity: 0.35 })
+      );
+      floor.rotation.x = -Math.PI / 2;
+      floor.position.y = -3.5;
+      floor.receiveShadow = true;
+      scene.add(floor);
+
+      // Materials
+      const shellMat = new THREE.MeshPhysicalMaterial({ color: 0x121212, roughness: 0.35, metalness: 0.15, clearcoat: 0.6, clearcoatRoughness: 0.25 });
+      const aluminumMat = new THREE.MeshStandardMaterial({ color: 0xd9d9d9, roughness: 0.3, metalness: 0.9 });
+      const goldMat = new THREE.MeshStandardMaterial({ color: 0xC9A876, roughness: 0.2, metalness: 1.0 });
+      const copperMat = new THREE.MeshStandardMaterial({ color: 0xb87333, roughness: 0.4, metalness: 0.8 }); // For the Driver Coil
+      const cushionMat = new THREE.MeshStandardMaterial({ color: 0x1c1c1c, roughness: 0.95, metalness: 0.0 });
+      
+      const grilleTexture = createGrilleTexture('#2a2a2a', '#0a0a0a');
+      const grilleMat = new THREE.MeshStandardMaterial({ map: grilleTexture, roughness: 0.5, metalness: 0.6, side: THREE.DoubleSide });
+
+      const headphoneGroup = new THREE.Group();
+
+      const headbandGeo = new THREE.TorusGeometry(2, 0.22, 16, 60, Math.PI);
+      const headband = new THREE.Mesh(headbandGeo, aluminumMat);
+      headband.rotation.z = Math.PI / 2;
+      headband.position.y = 0.5;
+      headband.castShadow = true;
+      headphoneGroup.add(headband);
+
+      // EXPLODED EARCUP BUILDER
+      function buildEarcup(side) {
+        const group = new THREE.Group();
+        group.position.set(side * 2.2, 0, 0);
+
+        // Yoke (Stays attached to headband)
+        const yoke = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.3, 12), aluminumMat);
+        yoke.position.y = 0.65;
+        group.add(yoke);
+
+        // 1ST LAYER: OUTER SHELL
+        const shell = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 24), shellMat);
+        shell.scale.set(0.38, 1, 1);
+        shell.position.x = side * 0.5; 
+        shell.castShadow = true;
+        group.add(shell);
+
+        // 2ND LAYER: ACOUSTIC FRAME & GRILLE
+        const frameGroup = new THREE.Group();
+        frameGroup.position.x = side * 1.8;
+        
+        const trim = new THREE.Mesh(new THREE.TorusGeometry(0.96, 0.045, 12, 48), goldMat);
+        trim.rotation.y = Math.PI / 2;
+        frameGroup.add(trim);
+
+        const grille = new THREE.Mesh(new THREE.CircleGeometry(0.82, 40), grilleMat);
+        grille.rotation.y = Math.PI / 2;
+        grille.position.x = side * 0.05;
+        frameGroup.add(grille);
+        group.add(frameGroup);
+
+        // 3RD LAYER: DRIVER UNIT (with Copper Coil)
+        const driverGroup = new THREE.Group();
+        driverGroup.position.x = side * 3.2;
+
+        const driverBase = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.65, 0.08, 32), shellMat);
+        driverBase.rotation.z = Math.PI / 2;
+        driverGroup.add(driverBase);
+
+        const coil = new THREE.Mesh(new THREE.TorusGeometry(0.25, 0.08, 16, 32), copperMat);
+        coil.rotation.y = Math.PI / 2;
+        coil.position.x = side * 0.05;
+        driverGroup.add(coil);
+        group.add(driverGroup);
+
+        // 4TH LAYER: INNER ACOUSTIC CHAMBER
+        const chamberGroup = new THREE.Group();
+        chamberGroup.position.x = side * 4.5;
+        
+        const chamberRing = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.08, 16, 40), aluminumMat);
+        chamberRing.rotation.y = Math.PI / 2;
+        chamberGroup.add(chamberRing);
+        group.add(chamberGroup);
+
+        // 5TH LAYER: CUSHION
+        const cushion = new THREE.Mesh(new THREE.TorusGeometry(0.85, 0.32, 20, 40), cushionMat);
+        cushion.rotation.y = Math.PI / 2;
+        cushion.position.x = side * 5.8;
+        cushion.castShadow = true;
+        group.add(cushion);
+
+        return group;
+      }
+
+      // Add exploded earcups for both sides
+      headphoneGroup.add(buildEarcup(-1), buildEarcup(1));
+      scene.add(headphoneGroup);
+
+      // Custom Model Logic (Retained)
+      const modelUrl = container.dataset.modelUrl;
+      if (modelUrl && modelUrl.trim() !== '') {
+        const gltfLoader = new THREE.GLTFLoader();
+        gltfLoader.load(
+          modelUrl,
+          (gltf) => {
+            headphoneGroup.visible = false;
+            const model = gltf.scene;
+            model.traverse((node) => {
+              if (node.isMesh) { node.castShadow = true; node.receiveShadow = true; }
+            });
+            const box = new THREE.Box3().setFromObject(model);
+            const size = new THREE.Vector3();
+            box.getSize(size);
+            const scaleFactor = 8 / Math.max(size.x, size.y, size.z);
+            model.scale.setScalar(scaleFactor);
+            const center = new THREE.Vector3();
+            box.getCenter(center);
+            model.position.sub(center.multiplyScalar(scaleFactor));
+            scene.add(model);
+          }
+        );
+      }
+
+      spinner.style.opacity = 0;
+      setTimeout(() => dragHint.classList.add('hide'), 5000);
+
+      // Updated Hotspots to match new exploded positions
+      const hotspotsData = [
+        {
+          title: 'Outer Shell',
+          desc: 'Acoustically sealed chamber machined from a single block of aerospace-grade aluminum.',
+          position: new THREE.Vector3(2.7, 0, 0)
+        },
+        {
+          title: 'Acoustic Frame',
+          desc: 'Precision grille optimized for maximum airflow and zero resonance.',
+          position: new THREE.Vector3(4.0, 0, 0.8)
+        },
+        {
+          title: 'Beryllium Drivers',
+          desc: 'Custom 40mm transducers with high-density copper voice coils for absolute fidelity.',
+          position: new THREE.Vector3(5.4, 0, 0)
+        }
+      ];
+
+      const hotspotMeshes = [];
+      const hotspotGeo = new THREE.SphereGeometry(0.12, 16, 16);
+      hotspotsData.forEach((data) => {
+        const mesh = new THREE.Mesh(hotspotGeo, new THREE.MeshBasicMaterial({ color: 0xC9A876 }));
+        mesh.position.copy(data.position);
+        mesh.userData = data;
+        headphoneGroup.add(mesh);
+        hotspotMeshes.push(mesh);
+      });
+
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+
+      container.addEventListener('click', (event) => {
+        const rect = container.getBoundingClientRect();
+        mouse.x = ((event.clientX - rect.left) / container.clientWidth) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / container.clientHeight) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(hotspotMeshes);
+        if (intersects.length > 0) {
+          const data = intersects[0].object.userData;
+          hotspotTitle.textContent = data.title;
+          hotspotDesc.textContent = data.desc;
+          controls.autoRotate = false;
+          hotspotUI.classList.add('is-visible');
+        }
+      });
+
+      closeBtn.addEventListener('click', () => {
+        hotspotUI.classList.remove('is-visible');
+        controls.autoRotate = true;
+      });
+
+      let time = 0;
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+
+        time += 0.05;
+        hotspotMeshes.forEach((mesh, i) => {
+          const scale = 1 + Math.sin(time + i) * 0.25;
+          mesh.scale.set(scale, scale, scale);
+        });
+
+        headphoneGroup.position.y = Math.sin(time * 0.4) * 0.1;
+
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+      });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Sonder 3D Viewer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "model_url",
+      "label": "3D Model URL (.glb)",
+      "info": "Optional — upload a .glb to Shopify Files and paste its URL here for a fully realistic render. Leave empty to use the built-in layered model."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sonder 3D Viewer"
+    }
+  ]
+}
+{% endschema %}

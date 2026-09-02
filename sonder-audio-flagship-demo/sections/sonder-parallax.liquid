@@ -1,0 +1,126 @@
+<section class="sonder-parallax-section">
+  <div class="parallax-container">
+    <div class="parallax-text">
+      <div class="parallax-text-block">
+        <span class="parallax-subtitle">Acoustic Engineering</span>
+        <h2 class="parallax-title">Uncompromising Sound.</h2>
+        <p>Custom-built drivers deliver absolute clarity across the frequency spectrum. Designed for the purists.</p>
+      </div>
+    </div>
+    <div class="parallax-visual">
+      <div class="parallax-image-wrapper">
+        {% if section.settings.parallax_image != blank %}
+          {{ section.settings.parallax_image | image_url: width: 1200 | image_tag: class: 'parallax-img', loading: 'lazy' }}
+        {% else %}
+          <img src="https://placehold.co/800x1200/111111/c9a876/png?text=Parallax+Visual" alt="Parallax Visual" class="parallax-img">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sonder-parallax-section {
+    background-color: #0A0A0A;
+    color: #ffffff;
+    padding: 100px 20px;
+    overflow: hidden;
+  }
+  .parallax-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+  }
+  @media (min-width: 768px) {
+    .parallax-container {
+      flex-direction: row;
+      align-items: center; /* Changed from flex-start to center vertically */
+    }
+  }
+  .parallax-text {
+    flex: 1;
+  }
+  .parallax-text-block {
+    max-width: 550px; /* Increased from 400px to fix word breaking */
+  }
+  .parallax-subtitle {
+    color: #C9A876;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .parallax-title {
+    font-size: clamp(2.5rem, 4vw, 4rem);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    color: #ffffff;
+    word-break: keep-all; /* Forces long words to stay intact */
+  }
+  .parallax-text-block p {
+    color: #888888;
+    line-height: 1.6;
+  }
+  .parallax-visual {
+    flex: 1;
+    position: relative;
+    /* height: 150vh; is REMOVED to fix the huge empty black space */
+  }
+  .parallax-image-wrapper {
+    height: 80vh;
+    min-height: 500px; /* Ensures image doesn't get too small */
+    width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    position: relative;
+  }
+  .parallax-img {
+    width: 100%;
+    height: 130%; /* Taller for parallax effect */
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      
+      gsap.to(".parallax-img", {
+        yPercent: -20,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".parallax-visual",
+          start: "top bottom", 
+          end: "bottom top",
+          scrub: true
+        }
+      });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Sonder Parallax",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "parallax_image",
+      "label": "Parallax Background Image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sonder Parallax"
+    }
+  ]
+}
+{% endschema %}

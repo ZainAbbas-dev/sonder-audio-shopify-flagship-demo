@@ -1,0 +1,261 @@
+<section class="sonder-bento-section">
+  <div class="bento-container">
+    <div class="bento-header">
+      <span class="bento-subtitle">Flagship Features</span>
+      <h2 class="bento-title">Engineered for Perfection.</h2>
+    </div>
+    
+    <div class="bento-grid">
+      <!-- Feature 1: Large Box (ANC) -->
+      <div class="bento-item item-large bento-animate" style="transition-delay: 0.1s;">
+        <div class="bento-content">
+          <h3>Active Noise Cancellation</h3>
+          <p>Block out the world and immerse yourself in pure, unadulterated sound with our custom acoustic isolation.</p>
+        </div>
+        <div class="bento-visual">
+          {% if section.settings.image_anc != blank %}
+            {{ section.settings.image_anc | image_url: width: 800 | image_tag: class: 'bento-img', loading: 'lazy' }}
+          {% else %}
+            <img src="https://placehold.co/800x600/111111/c9a876/png?text=ANC+Visual" alt="Active Noise Cancellation" class="bento-img">
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Feature 2: Small Box (Battery) -->
+      <div class="bento-item item-small bento-animate" style="transition-delay: 0.2s;">
+        {% if section.settings.image_battery != blank %}
+          {{ section.settings.image_battery | image_url: width: 600 | image_tag: class: 'bento-bg-img', loading: 'lazy' }}
+          <div class="bento-overlay"></div>
+        {% endif %}
+        <div class="bento-content">
+          <h3>50H Battery</h3>
+          <p>Listen for days without reaching for a charger. Fast charge gives 5 hours in 10 minutes.</p>
+        </div>
+      </div>
+
+      <!-- Feature 3: Small Box (Spatial Audio) -->
+      <div class="bento-item item-small bento-animate" style="transition-delay: 0.3s;">
+        {% if section.settings.image_spatial != blank %}
+          {{ section.settings.image_spatial | image_url: width: 600 | image_tag: class: 'bento-bg-img', loading: 'lazy' }}
+          <div class="bento-overlay"></div>
+        {% endif %}
+        <div class="bento-content">
+          <h3>Spatial Audio</h3>
+          <p>A 360-degree soundstage that puts you in the exact center of the studio.</p>
+        </div>
+      </div>
+
+      <!-- Feature 4: Wide Box (Craftsmanship) -->
+      <div class="bento-item item-wide bento-animate" style="transition-delay: 0.4s;">
+        {% if section.settings.image_craftsmanship != blank %}
+          {{ section.settings.image_craftsmanship | image_url: width: 1200 | image_tag: class: 'bento-bg-img', loading: 'lazy' }}
+          <div class="bento-overlay"></div>
+        {% endif %}
+        <div class="bento-content">
+          <h3>Premium Craftsmanship</h3>
+          <p>Aerospace-grade aluminum and memory foam earcups designed for absolute comfort.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sonder-bento-section {
+    background-color: #050505;
+    padding: 100px 20px;
+    color: #FFFFFF;
+  }
+  .bento-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .bento-header {
+    margin-bottom: 60px;
+    text-align: center;
+  }
+  .bento-subtitle {
+    color: #C9A876;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .bento-title {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 300;
+    color: #FFFFFF;
+    margin: 0;
+  }
+  
+  /* Grid Layout */
+  .bento-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    auto-rows: minmax(250px, auto);
+  }
+  
+  @media (min-width: 768px) {
+    .bento-grid {
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 300px);
+    }
+    .item-large {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+    .item-small {
+      grid-column: span 1;
+      grid-row: span 1;
+    }
+    .item-wide {
+      grid-column: span 3;
+      grid-row: span 1;
+      min-height: 250px;
+    }
+  }
+
+  /* Box Styles & Premium Animations */
+  .bento-item {
+    background-color: #0A0A0A;
+    border: 1px solid #1A1A1A;
+    border-radius: 16px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    position: relative;
+    /* Default Hidden State */
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  
+  /* Active Visible State */
+  .bento-item.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+  }
+
+  /* Hover Effect (Only applies when visible) */
+  @media (hover: hover) {
+    .bento-item.is-visible:hover {
+      transform: translateY(-5px);
+      border-color: #333;
+    }
+  }
+
+  /* Content inside the box (above images) */
+  .bento-content {
+    position: relative;
+    z-index: 2;
+  }
+  .bento-content h3 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 12px;
+    color: #FFFFFF;
+  }
+  .bento-content p {
+    color: #888888;
+    line-height: 1.5;
+    font-size: 1rem;
+    margin: 0;
+  }
+  
+  /* Image Styles */
+  .item-large .bento-visual {
+    margin-top: 30px;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+  }
+  .item-large .bento-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Background Image & Overlay Styles for Small/Wide Boxes */
+  .bento-bg-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    transition: transform 0.6s ease;
+  }
+  
+  .bento-item:hover .bento-bg-img {
+    transform: scale(1.05); /* Subtle zoom effect on hover */
+  }
+
+  .bento-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.6) 0%, rgba(10,10,10,0.9) 100%);
+    z-index: 1;
+  }
+</style>
+
+<script>
+  // Bulletproof Native Intersection Observer
+  document.addEventListener('DOMContentLoaded', () => {
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -50px 0px', threshold: 0.1 });
+
+    document.querySelectorAll('.bento-animate').forEach(item => {
+      observer.observe(item);
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Sonder Bento Grid",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image_anc",
+      "label": "Active Noise Cancellation Image (Large)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_battery",
+      "label": "50H Battery Image (Top Right)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_spatial",
+      "label": "Spatial Audio Image (Middle Right)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_craftsmanship",
+      "label": "Craftsmanship Image (Bottom Wide)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sonder Bento Grid"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,116 @@
+<!-- Page Load Overlay -->
+<div class="sonder-page-transition"></div>
+
+<!-- Custom Cursor -->
+<div class="sonder-cursor"></div>
+
+<style>
+  /* 1. Page Transition Styles */
+  .sonder-page-transition {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background-color: #050505;
+    z-index: 10000;
+    pointer-events: none;
+  }
+
+  /* 2. Custom Cursor Styles */
+  .sonder-cursor {
+    position: fixed;
+    top: 0; left: 0;
+    width: 10px; height: 10px;
+    background-color: #C9A876;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease, border 0.3s ease;
+    mix-blend-mode: difference;
+    display: none; /* Hidden on mobile by default */
+  }
+
+  /* Active/Hover state for cursor */
+  .sonder-cursor.is-active {
+    width: 45px; height: 45px;
+    background-color: rgba(201, 168, 118, 0.1);
+    border: 1px solid #C9A876;
+    backdrop-filter: blur(2px);
+  }
+
+  /* Only show custom cursor on desktop */
+  @media (min-width: 1024px) {
+    .sonder-cursor {
+      display: block;
+    }
+    body, a, button, .swatch-btn, .accordion-header {
+      cursor: none !important; 
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Check if GSAP is available
+    if (typeof gsap === 'undefined') return;
+
+    // 1. Smooth Page Load Transition
+    gsap.to('.sonder-page-transition', { 
+      opacity: 0, 
+      duration: 1, 
+      ease: "power2.inOut",
+      onComplete: () => document.querySelector('.sonder-page-transition').remove()
+    });
+
+    // 2. Custom Cursor Logic (Desktop Only)
+    if (window.innerWidth >= 1024) {
+      const cursor = document.querySelector('.sonder-cursor');
+      
+      // Move cursor with mouse
+      document.addEventListener('mousemove', (e) => {
+        gsap.to(cursor, { 
+          x: e.clientX, 
+          y: e.clientY, 
+          duration: 0.1, 
+          ease: "power2.out" 
+        });
+      });
+
+      // Add active state on hoverable elements
+      const hoverElements = document.querySelectorAll('a, button, .swatch-btn, .accordion-header');
+      hoverElements.forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('is-active'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('is-active'));
+      });
+
+      // 3. Magnetic Button Effect (Targeting CTA Buttons)
+      // Assuming your main buttons have a class like 'hero-cta' or 'button'
+      const magneticButtons = document.querySelectorAll('.hero-cta, .bento-animate a');
+      
+      magneticButtons.forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+          const rect = btn.getBoundingClientRect();
+          // Calculate mouse position relative to button center
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          
+          gsap.to(btn, {
+            x: x * 0.3, // Pull strength X
+            y: y * 0.3, // Pull strength Y
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        });
+
+        // Snap back to original position on mouse leave
+        btn.addEventListener('mouseleave', () => {
+          gsap.to(btn, {
+            x: 0,
+            y: 0,
+            duration: 0.7,
+            ease: "elastic.out(1, 0.3)"
+          });
+        });
+      });
+    }
+  });
+</script>

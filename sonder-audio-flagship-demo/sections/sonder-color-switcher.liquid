@@ -1,0 +1,152 @@
+{%- assign img_black = 'https://placehold.co/800x800/0a0a0a/c9a876/png?text=Midnight+Black' -%}
+{%- assign img_gold = 'https://placehold.co/800x800/c9a876/0a0a0a/png?text=Champagne+Gold' -%}
+{%- assign img_gray = 'https://placehold.co/800x800/333333/ffffff/png?text=Slate+Gray' -%}
+
+{%- if section.settings.image_black != blank -%}
+  {%- assign img_black = section.settings.image_black | image_url: width: 800 -%}
+{%- endif -%}
+{%- if section.settings.image_gold != blank -%}
+  {%- assign img_gold = section.settings.image_gold | image_url: width: 800 -%}
+{%- endif -%}
+{%- if section.settings.image_gray != blank -%}
+  {%- assign img_gray = section.settings.image_gray | image_url: width: 800 -%}
+{%- endif -%}
+
+<section class="color-switcher-section">
+  <div class="switcher-container">
+    <div class="switcher-header">
+      <h2>Find your color.</h2>
+      <p>Available in three signature finishes.</p>
+    </div>
+    
+    <div class="switcher-visual-container">
+      <img id="switcher-image" src="{{ img_black }}" alt="Product Color" class="switcher-image">
+    </div>
+
+    <div class="switcher-controls">
+      <button class="color-swatch active" data-color="black" data-image="{{ img_black }}" style="background-color: #1A1A1A; border-color: #C9A876;" aria-label="Midnight Black"></button>
+      <button class="color-swatch" data-color="gold" data-image="{{ img_gold }}" style="background-color: #C9A876; border-color: transparent;" aria-label="Champagne Gold"></button>
+      <button class="color-swatch" data-color="gray" data-image="{{ img_gray }}" style="background-color: #333333; border-color: transparent;" aria-label="Slate Gray"></button>
+    </div>
+    <div id="active-color-name" class="active-color-label">Midnight Black</div>
+  </div>
+</section>
+
+<style>
+  .color-switcher-section {
+    background-color: #050505;
+    padding: 100px 20px;
+    color: #ffffff;
+    text-align: center;
+  }
+  .switcher-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .switcher-header h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 300;
+    margin-bottom: 12px;
+    color: #ffffff;
+  }
+  .switcher-header p {
+    color: #888888;
+    margin-bottom: 40px;
+  }
+  .switcher-visual-container {
+    width: 100%;
+    max-width: 500px;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto 40px auto;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #0A0A0A;
+  }
+  .switcher-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.4s ease;
+  }
+  .switcher-image.fading {
+    opacity: 0;
+  }
+  .switcher-controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 16px;
+  }
+  .color-swatch {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    padding: 0;
+  }
+  .color-swatch:hover {
+    transform: scale(1.1);
+  }
+  .color-swatch.active {
+    transform: scale(1.15);
+    border-color: #C9A876 !important;
+  }
+  .active-color-label {
+    color: #888888;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const swatches = document.querySelectorAll('.color-swatch');
+    const mainImage = document.getElementById('switcher-image');
+    const colorLabel = document.getElementById('active-color-name');
+
+    swatches.forEach(swatch => {
+      swatch.addEventListener('click', function() {
+        swatches.forEach(s => s.classList.remove('active'));
+        this.classList.add('active');
+        colorLabel.textContent = this.getAttribute('aria-label');
+        
+        mainImage.classList.add('fading');
+        setTimeout(() => {
+          mainImage.src = this.getAttribute('data-image');
+          mainImage.classList.remove('fading');
+        }, 400); 
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Sonder Color Switcher",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image_black",
+      "label": "Midnight Black Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_gold",
+      "label": "Champagne Gold Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_gray",
+      "label": "Slate Gray Image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sonder Color Switcher"
+    }
+  ]
+}
+{% endschema %}

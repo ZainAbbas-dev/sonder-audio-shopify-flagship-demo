@@ -1,0 +1,292 @@
+<section class="sonder-sandbox-section">
+  <div class="sandbox-container">
+    <div class="sandbox-header">
+      <span class="sandbox-badge">Interactive Experience</span>
+      <h2 class="sandbox-title">Hear the Difference.</h2>
+      <p class="sandbox-subtitle">Put on your current headphones, hit play, and toggle the modes to experience our acoustic engineering in real-time.</p>
+    </div>
+
+    <div class="sandbox-player">
+      <!-- HTML5 Audio Source (Royalty-free track for demo) -->
+      <!-- 'crossorigin' is critical for Web Audio API to process external URLs -->
+      <audio id="sonder-audio-source" src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" crossorigin="anonymous" loop></audio>
+      
+      <!-- Visualizer UI -->
+      <div class="player-visual">
+        <div class="visualizer-wave" id="visual-wave">
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </div>
+      </div>
+
+      <!-- Play/Pause Control -->
+      <div class="player-controls">
+        <button id="play-pause-btn" class="play-btn">
+          <span class="play-text">PLAY AUDIO</span>
+        </button>
+      </div>
+
+      <!-- Acoustic Modes -->
+      <div class="mode-selector">
+        <button class="mode-btn active" data-mode="standard">Standard</button>
+        <button class="mode-btn" data-mode="anc">Noise Cancellation</button>
+        <button class="mode-btn" data-mode="spatial">Spatial Audio</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sonder-sandbox-section {
+    background-color: #050505;
+    padding: 120px 20px;
+    color: #FFFFFF;
+    text-align: center;
+  }
+  .sandbox-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #0A0A0A;
+    border: 1px solid #1A1A1A;
+    border-radius: 24px;
+    padding: 60px 40px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  }
+  .sandbox-badge {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: #C9A876;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .sandbox-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 300;
+    margin: 0 0 16px 0;
+    color: #FFFFFF;
+  }
+  .sandbox-subtitle {
+    color: #888888;
+    font-size: 1.1rem;
+    max-width: 500px;
+    margin: 0 auto 50px auto;
+    line-height: 1.6;
+  }
+
+  /* Visualizer */
+  .player-visual {
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  .visualizer-wave {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    height: 100%;
+  }
+  .bar {
+    width: 4px;
+    height: 10px;
+    background-color: #333333;
+    border-radius: 2px;
+    transition: height 0.1s ease, background-color 0.3s ease;
+  }
+  .visualizer-wave.is-playing .bar {
+    background-color: #C9A876;
+    animation: wave-animation 1s infinite alternate ease-in-out;
+  }
+  .visualizer-wave.is-playing .bar:nth-child(1) { animation-delay: 0.0s; }
+  .visualizer-wave.is-playing .bar:nth-child(2) { animation-delay: 0.2s; }
+  .visualizer-wave.is-playing .bar:nth-child(3) { animation-delay: 0.4s; }
+  .visualizer-wave.is-playing .bar:nth-child(4) { animation-delay: 0.1s; }
+  .visualizer-wave.is-playing .bar:nth-child(5) { animation-delay: 0.3s; }
+  .visualizer-wave.is-playing .bar:nth-child(6) { animation-delay: 0.5s; }
+
+  @keyframes wave-animation {
+    0% { height: 10px; }
+    100% { height: 50px; }
+  }
+
+  /* Play Button */
+  .play-btn {
+    background: transparent;
+    border: 1px solid #C9A876;
+    color: #FFFFFF;
+    padding: 16px 40px;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+  .play-btn:hover {
+    background: #C9A876;
+    color: #0A0A0A;
+  }
+
+  /* Mode Selectors */
+  .mode-selector {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .mode-btn {
+    background: #111111;
+    border: 1px solid #222222;
+    color: #888888;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+  }
+  .mode-btn:hover {
+    border-color: #555555;
+    color: #FFFFFF;
+  }
+  .mode-btn.active {
+    background: #C9A876;
+    border-color: #C9A876;
+    color: #0A0A0A;
+    font-weight: 500;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const audioElement = document.getElementById('sonder-audio-source');
+    const playBtn = document.getElementById('play-pause-btn');
+    const playText = playBtn.querySelector('.play-text');
+    const visualWave = document.getElementById('visual-wave');
+    const modeBtns = document.querySelectorAll('.mode-btn');
+    
+    let audioContext;
+    let track;
+    let biquadFilter;
+    let panner;
+    
+    let isPlaying = false;
+    let isInitialized = false;
+
+    // Initialize Web Audio API (Must be triggered by user interaction)
+    function initAudio() {
+      // Create context
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioContext = new AudioContext();
+      
+      // Pass audio element into the audio context
+      track = audioContext.createMediaElementSource(audioElement);
+      
+      // 1. Create ANC Simulation Node (LowShelf Filter to mimic deep isolation/bass presence)
+      biquadFilter = audioContext.createBiquadFilter();
+      biquadFilter.type = "lowshelf";
+      biquadFilter.frequency.value = 500; // Focus on lowering high frequency noise, boosting low
+      
+      // 2. Create Spatial Audio Node (Stereo Panner with slight Haas effect setup)
+      panner = audioContext.createStereoPanner();
+      
+      // Initial Connection (Standard Mode: Bypass filters)
+      track.connect(audioContext.destination);
+      isInitialized = true;
+    }
+
+    // Handle Play/Pause
+    playBtn.addEventListener('click', () => {
+      if (!isInitialized) {
+        initAudio();
+      }
+      
+      // Check if context is in suspended state (autoplay policy)
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+
+      if (!isPlaying) {
+        audioElement.play();
+        playText.textContent = 'PAUSE AUDIO';
+        visualWave.classList.add('is-playing');
+        isPlaying = true;
+      } else {
+        audioElement.pause();
+        playText.textContent = 'PLAY AUDIO';
+        visualWave.classList.remove('is-playing');
+        isPlaying = false;
+      }
+    });
+
+    // Handle Acoustic Modes
+    modeBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        if (!isInitialized) return; // Only work if audio is started
+
+        // Update UI
+        modeBtns.forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+
+        const mode = e.target.getAttribute('data-mode');
+
+        // Disconnect current routing to prevent buildup
+        track.disconnect();
+        biquadFilter.disconnect();
+        panner.disconnect();
+
+        // Re-route audio based on selected mode
+        if (mode === 'standard') {
+          // Clean signal directly to speakers
+          biquadFilter.gain.value = 0;
+          panner.pan.value = 0;
+          track.connect(audioContext.destination);
+          
+        } else if (mode === 'anc') {
+          // ANC: Deep immersive bass, highs cut off slightly
+          biquadFilter.type = "peaking";
+          biquadFilter.frequency.value = 400;
+          biquadFilter.Q.value = 1;
+          biquadFilter.gain.value = 8; // Boost lows
+          
+          track.connect(biquadFilter);
+          biquadFilter.connect(audioContext.destination);
+          
+        } else if (mode === 'spatial') {
+          // Spatial: Fast alternating pan to simulate width
+          panner.pan.value = 0; // Reset
+          track.connect(panner);
+          panner.connect(audioContext.destination);
+          
+          // Animate panning for spatial feel (simple simulation)
+          let panDirection = 1;
+          const spatialInterval = setInterval(() => {
+            if(!e.target.classList.contains('active')) {
+              clearInterval(spatialInterval);
+              return;
+            }
+            // Sweep pan left and right smoothly
+            const currentValue = panner.pan.value;
+            if (currentValue >= 0.5) panDirection = -0.05;
+            if (currentValue <= -0.5) panDirection = 0.05;
+            panner.pan.value += panDirection;
+          }, 50);
+        }
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Sonder Audio Sandbox",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Sonder Audio Sandbox"
+    }
+  ]
+}
+{% endschema %}
