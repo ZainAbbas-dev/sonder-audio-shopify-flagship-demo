@@ -40,7 +40,7 @@
     <!-- ======================================================= -->
     <!-- FIX FOR COLLECTION PAGE: FORCED WHITE BG / BLACK TEXT   -->
     <!-- ======================================================= -->
-    {% if template contains 'collection' %}
+    {% if template contains 'collection' or template contains 'product' %}
     <style>
       body, html, #MainContent, .section, .gradient, 
       .color-scheme-1, .color-scheme-2, .color-scheme-3, .section-background {
@@ -58,6 +58,13 @@
       .template-collection p, 
       .template-collection span, 
       .template-collection a, 
+      .template-product h1, 
+      .template-product h2, 
+      .template-product h3, 
+      .template-product p, 
+      .template-product span, 
+      .template-product a, 
+      .template-product label,
       .card__heading, 
       .card__heading a, 
       .price, 
@@ -67,6 +74,9 @@
       .facets__summary span,
       .select__select, 
       .product-count__text,
+      .product__title,
+      .product__info-wrapper,
+      .quantity__input,
       .icon-caret {
         color: #000000 !important;
       }
@@ -75,7 +85,7 @@
         background: transparent !important;
       }
       
-      .select__select, .facets__summary {
+      .select__select, .facets__summary, .quantity {
         border-color: #000000 !important;
       }
     </style>
@@ -209,7 +219,13 @@
       {% render 'quick-add-modal' %}
     {% endif %}
 
-    {% render 'sonder-interactions' %}
+    {%- comment -%}
+      'sonder-interactions' snippet file is missing from snippets/ folder — this was
+      causing the visible error: "Liquid error (layout/theme line 212): Could not
+      find asset snippets/sonder-interactions.liquid". Commented out until the file
+      is restored/created. See chat notes below.
+    {%- endcomment -%}
+    {%- comment -%}{% render 'sonder-interactions' %}{% endcomment -%}
 
   </body>
 </html>
