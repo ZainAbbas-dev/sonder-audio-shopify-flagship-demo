@@ -92,6 +92,72 @@
     {% endif %}
     <!-- ======================================================= -->
 
+    <!-- ======================================================= -->
+    <!-- FIX FOR CONTACT PAGE: FORCED WHITE BG / BLACK TEXT (PREMIUM LOOK) -->
+    <!-- ======================================================= -->
+    {% if template contains 'contact' %}
+    <style>
+      body, html, #MainContent, .section, .gradient,
+      .color-scheme-1, .color-scheme-2, .color-scheme-3, .section-background {
+        background-color: #FFFFFF !important;
+        background: #FFFFFF !important;
+        --color-background: 255, 255, 255 !important;
+        --color-foreground: 0, 0, 0 !important;
+        --color-base-text: 0, 0, 0 !important;
+        --color-base-heading: 0, 0, 0 !important;
+      }
+
+      .template-contact h1,
+      .template-contact h2,
+      .template-contact h3,
+      .template-contact p,
+      .template-contact span,
+      .template-contact a,
+      .template-contact label,
+      .contact h1,
+      .contact h2,
+      .contact h3,
+      .contact p,
+      .contact span,
+      .contact a,
+      .contact label {
+        color: #000000 !important;
+      }
+
+      .template-contact .field__input,
+      .template-contact input,
+      .template-contact textarea,
+      .contact .field__input,
+      .contact input,
+      .contact textarea {
+        background-color: #FFFFFF !important;
+        color: #000000 !important;
+        border: 1px solid #000000 !important;
+        border-radius: 2px !important;
+      }
+
+      .template-contact .field__label,
+      .contact .field__label {
+        color: #555555 !important;
+      }
+
+      .template-contact .button,
+      .contact .button {
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        border: 1px solid #000000 !important;
+        letter-spacing: 0.05em;
+        transition: opacity 0.25s ease;
+      }
+
+      .template-contact .button:hover,
+      .contact .button:hover {
+        opacity: 0.85 !important;
+      }
+    </style>
+    {% endif %}
+    <!-- ======================================================= -->
+
   <!-- GSAP & ScrollTrigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
