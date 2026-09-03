@@ -1,19 +1,64 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "sonder_hero": {
       "type": "sonder-hero",
-      "settings": {}
+      "settings": {
+        "hero_image": "shopify://shop_images/Gemini_Generated_Image_i3z3tai3z3tai3z3.jpg",
+        "button_link": ""
+      }
     },
     "sonder_parallax": {
       "type": "sonder-parallax",
-      "settings": {}
+      "settings": {
+        "parallax_image": "shopify://shop_images/Sonder_Stand_Aluminum_Headphone_Stand.webp"
+      }
     },
     "sonder_color_switcher": {
       "type": "sonder-color-switcher",
-      "settings": {}
+      "settings": {
+        "image_black": "shopify://shop_images/black.webp",
+        "image_gold": "shopify://shop_images/Sonder_Air_On-Ear.avif",
+        "image_gray": "shopify://shop_images/grey.webp"
+      }
     },
     "sonder_bento_grid": {
       "type": "sonder-bento-grid",
+      "settings": {
+        "image_anc": "shopify://shop_images/hero_section.jpg",
+        "image_battery": "shopify://shop_images/50H_battery.jpg",
+        "image_spatial": "shopify://shop_images/gold_box.jpg",
+        "image_craftsmanship": "shopify://shop_images/Gemini_Generated_Image_d6yi87d6yi87d6yi.jpg"
+      }
+    },
+    "sonder_3d_viewer_c3TBJ7": {
+      "type": "sonder-3d-viewer",
+      "name": "Sonder 3D Viewer",
+      "settings": {
+        "model_url": ""
+      }
+    },
+    "sonder_audio_sandbox_CHxiQ8": {
+      "type": "sonder-audio-sandbox",
+      "name": "Sonder Audio Sandbox",
+      "settings": {}
+    },
+    "sonder_profiler_gjnzUG": {
+      "type": "sonder-profiler",
+      "name": "Sonder Fit Profiler",
+      "settings": {}
+    },
+    "sonder_tech_specs_LMVTFy": {
+      "type": "sonder-tech-specs",
+      "name": "Sonder Tech Specs",
       "settings": {}
     }
   },
@@ -21,6 +66,10 @@
     "sonder_hero",
     "sonder_parallax",
     "sonder_color_switcher",
-    "sonder_bento_grid"
+    "sonder_bento_grid",
+    "sonder_3d_viewer_c3TBJ7",
+    "sonder_audio_sandbox_CHxiQ8",
+    "sonder_profiler_gjnzUG",
+    "sonder_tech_specs_LMVTFy"
   ]
 }
